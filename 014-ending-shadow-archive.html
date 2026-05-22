@@ -1,0 +1,829 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=5"
+    />
+    <title>结局 · 深层卷宗</title>
+    <link rel="stylesheet" href="./assets/tailwind.css" />
+    <link rel="stylesheet" href="./014-ending-shadow-archive.css" />
+  </head>
+  <body class="e2-body">
+    <!-- 封停公告 + 警徽（完整开场，013 仅文案入口） -->
+    <div
+      id="sealLayer"
+      class="e2-seal-layer"
+    >
+      <div class="crt-overlay e2-seal-crt"></div>
+      <article
+        id="sealCard"
+        class="seal-card e2-seal-card"
+      >
+        <div class="e2-seal-badge-wrap">
+          <svg class="e2-seal-svg" viewBox="0 0 100 100" aria-hidden="true">
+            <circle cx="50" cy="50" r="46" fill="none" stroke="currentColor" stroke-width="3" />
+            <path
+              fill="currentColor"
+              d="M50 18 L58 38 L80 40 L64 54 L68 76 L50 65 L32 76 L36 54 L20 40 L42 38 Z"
+              opacity="0.9"
+            />
+            <circle cx="50" cy="48" r="8" fill="#fef3c7" stroke="currentColor" stroke-width="1.5" />
+          </svg>
+          <span class="e2-seal-badge-label">警徽</span>
+        </div>
+        <h1 class="e2-seal-title">
+          【A国网络安全保卫支队 封停公告】
+        </h1>
+        <p class="e2-seal-body">
+          该域名所属服务器（无限生物科技有限公司）因涉嫌重大案件，已被依法查封离线。
+        </p>
+        <p class="e2-seal-foot">本公告自发布之时起生效</p>
+      </article>
+    </div>
+
+    <div
+      id="terminalLayer"
+      class="e2-term-layer hidden"
+    >
+      <div
+        id="terminalLines"
+        class="e2-term-lines"
+      ></div>
+      <div id="passwordBlock" class="e2-pw-block hidden">
+        <div class="e2-pw-prompt-row">
+          <span id="passwordPromptLabel" class="e2-pw-prompt hidden">&gt; Please input Administrator Password:</span>
+        </div>
+        <div class="e2-pw-input-row">
+          <span id="passwordEcho" class="e2-pw-echo"></span>
+          <span id="passwordCaret" class="e2-pw-caret">█</span>
+          <input
+            id="adminPasswordInput"
+            type="text"
+            autocomplete="off"
+            spellcheck="false"
+            class="e2-pw-input-hidden"
+            aria-label="管理员密码"
+          />
+        </div>
+        <p id="passwordFeedback" class="e2-pw-feedback"></p>
+      </div>
+      <div id="grantedBlock" class="e2-granted-block hidden">
+        <p class="e2-granted-title">&gt; ACCESS GRANTED.</p>
+        <p class="e2-granted-text">
+          深层路由已解锁。只读卷挂载完成，正在载入碎片化案卷索引……
+        </p>
+        <p id="grantWait" class="e2-granted-wait">正在打开归档视图…</p>
+      </div>
+    </div>
+
+    <!-- 登录后：已收集文件（关键词检索） -->
+    <div
+      id="archiveLayer"
+      class="e2-archive-layer hidden"
+      aria-hidden="true"
+    >
+      <div class="e2-archive-inner">
+        <p class="e2-archive-notice">
+          无限生物科技有限公司机密文件，请管理员注意保密工作，文件名称按照既有规则命名。
+        </p>
+        <label class="e2-archive-label">
+          <span class="e2-sr-only">关键词搜索</span>
+          <div class="e2-search-shell">
+            <input
+              id="fileKeywordInput"
+              type="text"
+              inputmode="search"
+              enterkeyhint="search"
+              autocomplete="off"
+              spellcheck="false"
+              placeholder="须输入完整文件名（可大小写不一致）"
+              class="e2-search-input"
+              aria-label="关键词搜索"
+            />
+          </div>
+        </label>
+        <div id="openedFilesSection" class="e2-archive-section">
+          <p class="e2-archive-heading">已打开文件：（可再次阅读）</p>
+          <ul id="openedFileList" class="e2-archive-list"></ul>
+          <p id="openedFileListEmpty" class="e2-archive-muted">尚未打开任何文件预览。</p>
+        </div>
+        <p class="e2-archive-heading e2-archive-heading--spaced-top">已收集文件：（点击阅读）</p>
+        <ul id="collectedFileList" class="e2-archive-list"></ul>
+        <p id="fileListEmpty" class="e2-archive-muted hidden">无匹配条目。</p>
+        <button
+          id="homeAfterArchive"
+          type="button"
+          class="e2-archive-home"
+        >
+          返回首页
+        </button>
+      </div>
+    </div>
+
+    <div
+      id="filePreviewBackdrop"
+      class="e2-preview-backdrop hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-label="文件预览"
+    >
+      <div class="e2-preview-panel">
+        <button
+          id="filePreviewClose"
+          type="button"
+          class="e2-preview-close"
+        >
+          关闭
+        </button>
+        <p id="filePreviewTitle" class="e2-preview-title"></p>
+        <img
+          id="filePreviewImage"
+          class="e2-preview-img hidden"
+          alt=""
+        />
+        <div
+          id="filePreviewText"
+          class="e2-preview-text prose-article prose-article--archive hidden"
+        ></div>
+      </div>
+    </div>
+
+    <script src="./progressTracker.js"></script>
+    <script src="./proseArticle.js"></script>
+    <script>
+      (function () {
+        var ARCHIVE_UNLOCKED_KEY = "game014_shadow_archive_unlocked";
+        /** 曾打开过预览的卷宗 id 列表（顺序保留，持久化） */
+        var OPENED_ARCHIVE_FILES_KEY = "game014_shadow_files_opened";
+        /** 本标签页内已进入过 015 后续时置位，避免从 015 返回 014 后反复跳转 */
+        var AFTERMATH_ENTERED_SESSION_KEY = "game015_aftermath_entered";
+        try {
+          var replayParams = new URLSearchParams(window.location.search);
+          if (replayParams.get("replayArchive") === "1") {
+            sessionStorage.setItem(AFTERMATH_ENTERED_SESSION_KEY, "1");
+          }
+          if (replayParams.get("force015") === "1") {
+            sessionStorage.removeItem(AFTERMATH_ENTERED_SESSION_KEY);
+          }
+        } catch (eReplay) {}
+        var previewGate = false;
+        var previewHistoryPushed = false;
+        /** 本次检索使隐藏段从不足 100% 升至 100% 时命中的里程碑卷宗 id；须打开并关闭该条预览后再进 015 */
+        var aftermathPendingMilestoneId = null;
+        /** 当前预览若为上述待定卷宗，关闭时允许跳转 */
+        var aftermathNavigateAfterThisClose = false;
+        var sealLayer = document.getElementById("sealLayer");
+        var sealCard = document.getElementById("sealCard");
+        var terminalLayer = document.getElementById("terminalLayer");
+        var terminalLines = document.getElementById("terminalLines");
+        var passwordBlock = document.getElementById("passwordBlock");
+        var adminInput = document.getElementById("adminPasswordInput");
+        var passwordEcho = document.getElementById("passwordEcho");
+        var passwordFeedback = document.getElementById("passwordFeedback");
+        var grantedBlock = document.getElementById("grantedBlock");
+        var grantWait = document.getElementById("grantWait");
+        var archiveLayer = document.getElementById("archiveLayer");
+        var fileKeywordInput = document.getElementById("fileKeywordInput");
+        var collectedFileList = document.getElementById("collectedFileList");
+        var fileListEmpty = document.getElementById("fileListEmpty");
+        var filePreviewBackdrop = document.getElementById("filePreviewBackdrop");
+        var filePreviewClose = document.getElementById("filePreviewClose");
+        var filePreviewImage = document.getElementById("filePreviewImage");
+        var filePreviewText = document.getElementById("filePreviewText");
+        var filePreviewTitle = document.getElementById("filePreviewTitle");
+        var openedFileList = document.getElementById("openedFileList");
+        var openedFileListEmpty = document.getElementById("openedFileListEmpty");
+        var homeAfterArchiveBtn = document.getElementById("homeAfterArchive");
+
+        var CORRECT = "JXZZ60@WT11";
+
+        /** 与 progressTracker 中 SHADOW_FILE_WEIGHTS 一致：搜索命中列表即计 25%（不按打开顺序） */
+        var SHADOW_MILESTONE_IDS = {
+          "arc-120627": true,
+          "log-1336890": true,
+          "bm-316698": true,
+          "fd-678341": true
+        };
+
+        /** 与 progressTracker 中 SHADOW_FILES_VIEWED_KEY 一致：搜索命中过的里程碑卷宗 id */
+        var SHADOW_FILES_VIEWED_STORAGE_KEY = "game014_shadow_files_viewed";
+
+        /** 已收集列表：defaultVisible + 曾检索命中 + 曾打开预览；搜索框可额外精确匹配 label 以发现新条目 */
+        var ARCHIVE_FILES = [
+          {
+            id: "cwb-112304",
+            label: "BM-120627",
+            defaultVisible: true,
+            keywords: [
+              "cwb",
+              "112304",
+              "汇款",
+              "转账",
+              "泰和",
+              "银行",
+              "回单",
+              "牙科",
+              "材料",
+              "张力",
+              "大川",
+              "txn9823004128",
+              "12800"
+            ],
+            imageSrc: "./media/cwb-112304.png",
+            imageAlt: "泰和商业银行网上银行转账汇款单：交易日期2024年3月15日，流水号TXN9823004128，汇款金额12800元，款项用途样本材料"
+          },
+          {
+            id: "adm-112306",
+            label: "ADM-112306",
+            defaultVisible: true,
+            keywords: [
+              "adm",
+              "112306",
+              "adm-112306",
+              "架构",
+              "组织",
+              "架构图",
+              "部门",
+              "org",
+              "chart"
+            ],
+            bodyText:
+              "【ADM-112306】公司组织架构图（内部 · 一级部门）\n\n" +
+              "公司本部\n" +
+              "├── 财务部（Finance Dept.） 负责人：王德全（工号 678341）\n" +
+              "├── 人事部（Admin）负责人：何蕊（工号  112306）\n" +
+              "├── 辅助生殖中心（Assisted Reproductive Center）负责人：张弛（工号120627）\n" +
+              "├── 生物材料研发中心（Bio-Material Lab） 负责人：余悦（工号316698）\n" +
+              "├── 物流运筹部（Logistics） 负责人：刘伟（工号 1336890）\n" +
+              "└── IT 服务（IT）负责人：赖全（工号 513890）\n\n"
+          },
+          {
+            id: "arc-120627",
+            label: "ARC-120627",
+            defaultVisible: false,
+            keywords: ["arc", "120627", "arc-120627", "辅助生殖", "生殖中心"],
+            bodyText:
+              "项目技术备忘录（节选）\n\n" +
+              "1. 项目背景\n" +
+              "为解决传统动物源性骨替代材料（如猪、牛骨）存在的免疫排斥风险及生物相容性上限问题，本项目开发了以“同种骨”为核心的种植牙骨粉/涂层技术。其原材料取自经过高温脱有机质处理的“特定碳化生物样本”（下称“样本”）。\n\n" +
+              "2. 工艺流程说明\n\n" +
+              "第一阶段：样本预处理\n\n" +
+              "杂质剔除： 样本送达实验室后，首先通过高频振动筛剔除残余的金属物（如假牙残余、义齿合金、衣物金属扣等）。\n\n" +
+              "初步破碎： 使用工业级破碎机将样本研磨至粒径小于 2mm 的颗粒，增加后续化学反应的接触面积。\n\n" +
+              "第二阶段：二次高温煅烧\n\n" +
+              "有机质彻底消除： 将颗粒置于真空烧结炉中，升温至 1100℃-1300℃，恒温持续 6 小时。\n\n" +
+              "作用： 此过程旨在彻底消除样本中可能残留的任何 DNA 片段、病原体或有机碳成分，将样本转化为纯净的无机生物骨盐（主要是羟基磷灰石）。\n\n" +
+              "第三阶段：纳米级微粉化\n\n" +
+              "球磨工艺： 煅烧后的白色骨盐进入行星式球磨机，加入特定配比的生理缓冲液，进行 24 小时循环研磨。\n\n" +
+              "目标： 最终产物粒径需达到纳米级（100nm-500nm），以确保其在植入患者牙床后能迅速诱导成骨细胞附着。\n\n" +
+              "第四阶段：复合与成型\n\n" +
+              "钛基涂层： 将提取的纳米骨盐通过等离子喷涂技术，均匀覆盖在种植体（螺钉）表面。\n\n" +
+              "成品包装： 剩余的骨盐颗粒加工成“生物型骨充填材料”，封装入瓶。\n\n" +
+              "3. 成本与优势分析\n\n" +
+              "原材料获取： 通过特定渠道获取，成本极低。\n\n" +
+              "\n\n" +
+              "4. 风险警示\n\n" +
+              "本工艺严禁向外界披露原材料的具体来源。\n\n" +
+              "所有涉及“呈豫科技园 B 座实验室”的采购单据（如汇款至个人账户的“样本材料费”）须在结算后立即进行数据粉碎处理。"
+          },
+          {
+            id: "log-1336890",
+            label: "LOG-1336890",
+            defaultVisible: false,
+            keywords: ["log", "1336890", "log-1336890", "物流", "运筹", "元福", "泰德"],
+            bodyText:
+              "【LOG-1336890】系统流水（节选）\n\n" +
+              "操作时间： 2024-03-18 23:15\n" +
+              "操作员： 系统自动\n" +
+              "动作描述：\n\n" +
+              "接收来自“元福服务中心”物流车的原材料共计 120kg，系统标记为“粗制钙盐”。\n\n" +
+              "执行指令：【覆盖贴标】。\n\n" +
+              "新标签打印：“泰德医疗器械 - 进口高纯度纳米骨粉”。\n\n" +
+              "入库去向：成品库 A-04 区。\n\n" +
+              "系统注释： 实际入库成本：¥10,000；账面生成应付账款（泰德医疗）：¥2,220,000。"
+          },
+          {
+            id: "bm-316698",
+            label: "BM-316698",
+            defaultVisible: false,
+            keywords: [
+              "bm",
+              "316698",
+              "bm-316698",
+              "生殖中心",
+              "湖山殡仪馆",
+              "殡仪馆",
+              "氢氧化钠",
+              "J-04",
+              "去肉",
+              "肢解"
+            ],
+            bodyText:
+              "【BM-316698】接收与处置记录（节选）\n\n" +
+              "1. 接收与核验（Reception）\n\n" +
+              "所有从“元福服务中心”或“湖山殡仪馆”运抵的冷链周转箱（蓝框），必须在卸货区进行二次称重。\n\n" +
+              "严禁在卸货区打开箱体，防止生物性气味散溢引起工业园巡逻人员注意。\n\n" +
+              "2. 机械去肉与肢解（De-fleshing & Dismemberment）\n\n" +
+              "初步分离： 使用 J-04型高频切割锯，沿肩关节、髋关节进行快速离断。\n\n" +
+              "软组织剥离： 肢解后的部分进入“氢氧化钠浸泡池”（加温至 80℃）。浸泡 4 小时后，软组织将液化剥离。\n\n" +
+              "手动清理： 操作员需佩戴加厚防穿刺手套，使用刮刀清理附着在长骨末端的残留筋膜。\n\n" +
+              "关键部位处理： 头骨需钻孔，利用负压抽吸装置移除内部软组织。\n"
+          },
+          {
+            id: "fd-678341",
+            label: "FD-678341",
+            defaultVisible: false,
+            keywords: [
+              "fd",
+              "678341",
+              "fd-678341",
+              "FD-678341",
+              "财务",
+              "封账",
+              "核销",
+              "影子节点",
+              "结案",
+              "应付"
+            ],
+            bodyText:
+              "【FD-678341】财务封账与异常核销备忘录（内部 · 只读）\n" +
+              "一、 资金归集\n" +
+              "针对上季度与“泰德医疗”等供应商的采购差额（共计 1,800.00 万元），已由财务部完成统一归集，暂存在项目预留金账户。\n\n" +
+              "二、 分配与拨付路径（4/6 比例原则）\n" +
+              "社会责任共建支出 (40%)：\n\n" +
+              "金额： 720.00 万元\n\n" +
+              "最终投向： 湖山县优生优育慈善基金会。\n\n" +
+              "战略技术咨询专项 (60%)：\n\n" +
+              "金额： 1,080.00 万元\n\n" +
+              "拨付名义： 跨境“高分子生物材料技术咨询费”。\n\n" +
+              "接收方： 境外指定个人账户（ZHQ19768792）。\n\n"
+          },
+          {
+            id: "00-readme",
+            label: "00-readme",
+            defaultVisible: false,
+            keywords: ["readme", "read", "说明", "索引"],
+            bodyText: "（占位）索引文件，无附件。后续可在此写入剧情文本。"
+          }
+        ];
+
+        var lines = [
+          "> 尝试连接 无限生物科技有限公司_主节点... [失败：目标已被物理切断]",
+          "> 正在绕过本地防火墙...",
+          "> 正在唤醒 【无限生物科技有限公司_容灾备份影子节点】... [连接成功]",
+          "> 警告：您正在访问未备案的深层数据。",
+          "> Root Directory Access Denied."
+        ];
+        var passwordPromptLabel = document.getElementById("passwordPromptLabel");
+
+        function wait(ms) {
+          return new Promise(function (r) {
+            setTimeout(r, ms);
+          });
+        }
+
+        function appendLine(text) {
+          var p = document.createElement("p");
+          p.className = "terminal-line";
+          p.textContent = text;
+          terminalLines.appendChild(p);
+          p.scrollIntoView({ block: "nearest", behavior: "smooth" });
+        }
+
+        function norm(s) {
+          return String(s || "")
+            .trim()
+            .toLowerCase();
+        }
+
+        function readShadowArchiveViewedIdMap() {
+          try {
+            var raw = localStorage.getItem(SHADOW_FILES_VIEWED_STORAGE_KEY) || "[]";
+            var parsed = JSON.parse(raw);
+            if (!Array.isArray(parsed)) {
+              return {};
+            }
+            var map = {};
+            for (var i = 0; i < parsed.length; i++) {
+              var sid = String(parsed[i] || "").trim();
+              if (sid) {
+                map[sid] = true;
+              }
+            }
+            return map;
+          } catch (eViewed) {
+            return {};
+          }
+        }
+
+        function getDisplayedCollectedFiles() {
+          var q = norm(fileKeywordInput && fileKeywordInput.value);
+          var viewedMap = readShadowArchiveViewedIdMap();
+          var openedIds = readOpenedArchiveIds();
+          var openedMap = {};
+          for (var oi = 0; oi < openedIds.length; oi++) {
+            openedMap[openedIds[oi]] = true;
+          }
+          return ARCHIVE_FILES.filter(function (f) {
+            var queryHit = q && norm(f.label) === q;
+            var unlocked =
+              !!f.defaultVisible || !!viewedMap[f.id] || !!openedMap[f.id];
+            return unlocked || queryHit;
+          });
+        }
+
+        function findArchiveFileById(id) {
+          var sid = String(id || "").trim();
+          for (var i = 0; i < ARCHIVE_FILES.length; i++) {
+            if (ARCHIVE_FILES[i].id === sid) {
+              return ARCHIVE_FILES[i];
+            }
+          }
+          return null;
+        }
+
+        function readOpenedArchiveIds() {
+          try {
+            var raw = localStorage.getItem(OPENED_ARCHIVE_FILES_KEY) || "[]";
+            var parsed = JSON.parse(raw);
+            if (!Array.isArray(parsed)) {
+              return [];
+            }
+            return parsed
+              .map(function (x) {
+                return String(x || "").trim();
+              })
+              .filter(Boolean);
+          } catch (eRead) {
+            return [];
+          }
+        }
+
+        function writeOpenedArchiveIds(ids) {
+          try {
+            localStorage.setItem(OPENED_ARCHIVE_FILES_KEY, JSON.stringify(ids));
+          } catch (eWrite) {}
+        }
+
+        function renderOpenedFileList() {
+          if (!openedFileList || !openedFileListEmpty) {
+            return;
+          }
+          openedFileList.innerHTML = "";
+          var ids = readOpenedArchiveIds();
+          var shown = 0;
+          ids.forEach(function (fid) {
+            var file = findArchiveFileById(fid);
+            if (!file) {
+              return;
+            }
+            shown += 1;
+            var li = document.createElement("li");
+            var btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = "e2-file-link e2-file-link--opened";
+            btn.textContent = "(" + shown + ") " + file.label;
+            btn.addEventListener("click", function () {
+              openFilePreview(file);
+            });
+            li.appendChild(btn);
+            openedFileList.appendChild(li);
+          });
+          if (shown === 0) {
+            openedFileListEmpty.classList.remove("hidden");
+          } else {
+            openedFileListEmpty.classList.add("hidden");
+          }
+        }
+
+        function recordArchiveFileOpened(file) {
+          if (!file || !file.id) {
+            return;
+          }
+          var ids = readOpenedArchiveIds();
+          var sid = file.id;
+          if (ids.indexOf(sid) !== -1) {
+            return;
+          }
+          ids.push(sid);
+          writeOpenedArchiveIds(ids);
+          renderOpenedFileList();
+        }
+
+        function returnToArchiveHome() {
+          closeFilePreviewVisual(true);
+          if (fileKeywordInput) {
+            fileKeywordInput.value = "";
+          }
+          try {
+            window.scrollTo(0, 0);
+          } catch (eScroll) {}
+          if (archiveLayer) {
+            archiveLayer.scrollTop = 0;
+          }
+          try {
+            history.replaceState(null, "", "#archive");
+          } catch (eH) {}
+          renderFileList();
+          renderOpenedFileList();
+          if (fileKeywordInput) {
+            fileKeywordInput.blur();
+          }
+        }
+
+        function maybeOpenEnding2Aftermath() {
+          var gp = window.GameProgressTracker;
+          if (!gp || typeof gp.getShadowBonusPercent !== "function" || typeof gp.resolveUrlWithStage !== "function") {
+            return;
+          }
+          if (!archiveLayer || archiveLayer.classList.contains("hidden")) {
+            return;
+          }
+          if (gp.getShadowBonusPercent() < 100) {
+            return;
+          }
+          try {
+            if (sessionStorage.getItem(AFTERMATH_ENTERED_SESSION_KEY) === "1") {
+              return;
+            }
+            sessionStorage.setItem(AFTERMATH_ENTERED_SESSION_KEY, "1");
+          } catch (eStore) {}
+          var raw = "./015-ending-recap.html";
+          window.location.replace(gp.resolveUrlWithStage(raw));
+        }
+
+        function renderFileList() {
+          var q = norm(fileKeywordInput && fileKeywordInput.value);
+          var gp = window.GameProgressTracker;
+          var prevShadow =
+            gp && typeof gp.getShadowBonusPercent === "function" ? gp.getShadowBonusPercent() : 0;
+          if (q && gp && gp.markShadowArchiveFileSearched) {
+            ARCHIVE_FILES.forEach(function (file) {
+              if (file && SHADOW_MILESTONE_IDS[file.id] && norm(file.label) === q) {
+                gp.markShadowArchiveFileSearched(file.id);
+              }
+            });
+          }
+          var nextShadow =
+            gp && typeof gp.getShadowBonusPercent === "function" ? gp.getShadowBonusPercent() : 0;
+          if (nextShadow >= 100 && prevShadow < 100 && q) {
+            for (var pi = 0; pi < ARCHIVE_FILES.length; pi++) {
+              var pf = ARCHIVE_FILES[pi];
+              if (pf && SHADOW_MILESTONE_IDS[pf.id] && norm(pf.label) === q) {
+                aftermathPendingMilestoneId = pf.id;
+                break;
+              }
+            }
+          }
+          var list = getDisplayedCollectedFiles();
+          collectedFileList.innerHTML = "";
+          if (!list.length) {
+            fileListEmpty.classList.remove("hidden");
+            return;
+          }
+          fileListEmpty.classList.add("hidden");
+          list.forEach(function (file, idx) {
+            var li = document.createElement("li");
+            var btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = "e2-file-link e2-file-link--collected";
+            btn.textContent = "(" + (idx + 1) + ") " + file.label;
+            btn.addEventListener("click", function () {
+              openFilePreview(file);
+            });
+            li.appendChild(btn);
+            collectedFileList.appendChild(li);
+          });
+        }
+
+        function openFilePreview(file) {
+          filePreviewTitle.textContent = file.label;
+          if (file.imageSrc) {
+            filePreviewImage.onerror = function () {
+              filePreviewImage.onerror = null;
+              filePreviewImage.classList.add("hidden");
+              filePreviewText.innerHTML =
+                "<p>卷宗配图未能加载。请确认已将 media 目录与网页一并部署到服务器，且路径、文件名（含大小写）一致。</p>";
+              filePreviewText.classList.remove("hidden");
+            };
+            filePreviewImage.src = file.imageSrc;
+            filePreviewImage.alt = file.imageAlt || file.label;
+            filePreviewImage.classList.remove("hidden");
+            filePreviewText.classList.add("hidden");
+            filePreviewText.textContent = "";
+          } else {
+            filePreviewImage.onerror = null;
+            filePreviewImage.removeAttribute("src");
+            filePreviewImage.classList.add("hidden");
+            var bodyHtml =
+              window.ProseArticle && typeof ProseArticle.formatPlainTextToProseHtml === "function"
+                ? ProseArticle.formatPlainTextToProseHtml(file.bodyText)
+                : "";
+            filePreviewText.innerHTML = bodyHtml || "<p>（无预览内容）</p>";
+            filePreviewText.classList.remove("hidden");
+          }
+          filePreviewBackdrop.classList.remove("hidden");
+          filePreviewBackdrop.classList.add("flex");
+          filePreviewBackdrop.setAttribute("aria-hidden", "false");
+          previewGate = true;
+          previewHistoryPushed = false;
+          try {
+            history.pushState({ gameFilePreview: true }, "", window.location.href);
+            previewHistoryPushed = true;
+          } catch (ePush) {}
+          aftermathNavigateAfterThisClose =
+            !!aftermathPendingMilestoneId && file.id === aftermathPendingMilestoneId;
+          recordArchiveFileOpened(file);
+        }
+
+        function closeFilePreviewVisual(skipEnding2Aftermath) {
+          if (!filePreviewBackdrop) {
+            return;
+          }
+          filePreviewBackdrop.classList.add("hidden");
+          filePreviewBackdrop.classList.remove("flex");
+          filePreviewBackdrop.setAttribute("aria-hidden", "true");
+          previewGate = false;
+          previewHistoryPushed = false;
+
+          var navigate = aftermathNavigateAfterThisClose;
+          aftermathNavigateAfterThisClose = false;
+          if (skipEnding2Aftermath) {
+            return;
+          }
+
+          var gp = window.GameProgressTracker;
+          var bonus =
+            gp && typeof gp.getShadowBonusPercent === "function" ? gp.getShadowBonusPercent() : 0;
+          if (bonus < 100) {
+            return;
+          }
+          if (navigate) {
+            aftermathPendingMilestoneId = null;
+            maybeOpenEnding2Aftermath();
+            return;
+          }
+          if (aftermathPendingMilestoneId === null) {
+            maybeOpenEnding2Aftermath();
+          }
+        }
+
+        function closeFilePreviewViaHistory() {
+          if (previewGate && previewHistoryPushed) {
+            try {
+              history.back();
+            } catch (eBack) {
+              closeFilePreviewVisual();
+            }
+            return;
+          }
+          closeFilePreviewVisual();
+        }
+
+        function openArchiveUI() {
+          if (terminalLayer) {
+            terminalLayer.classList.add("hidden");
+          }
+          if (archiveLayer) {
+            archiveLayer.classList.remove("hidden");
+            archiveLayer.setAttribute("aria-hidden", "false");
+          }
+          renderFileList();
+          renderOpenedFileList();
+          if (window.GameProgressTracker && window.GameProgressTracker.refreshProgressUI) {
+            window.GameProgressTracker.refreshProgressUI();
+          }
+        }
+
+        if (homeAfterArchiveBtn) {
+          homeAfterArchiveBtn.addEventListener("click", returnToArchiveHome);
+        }
+
+        async function runTerminal() {
+          terminalLayer.classList.remove("hidden");
+          for (var i = 0; i < lines.length; i++) {
+            await wait(520 + Math.random() * 380);
+            appendLine(lines[i]);
+          }
+          await wait(700);
+          passwordBlock.classList.remove("hidden");
+          if (passwordPromptLabel) {
+            passwordPromptLabel.classList.remove("hidden");
+          }
+          await wait(400);
+          adminInput.focus();
+        }
+
+        document.getElementById("terminalLayer").addEventListener("click", function () {
+          if (archiveLayer && !archiveLayer.classList.contains("hidden")) {
+            return;
+          }
+          if (!grantedBlock.classList.contains("hidden")) {
+            return;
+          }
+          adminInput.focus();
+        });
+
+        adminInput.addEventListener("input", function () {
+          passwordEcho.textContent = adminInput.value;
+        });
+
+        adminInput.addEventListener("keydown", function (e) {
+          if (e.key === "Enter") {
+            var v = (adminInput.value || "").trim();
+            if (v === CORRECT) {
+              passwordFeedback.textContent = "";
+              passwordFeedback.className = "e2-pw-feedback e2-pw-feedback--ok";
+              passwordFeedback.textContent = "> 校验通过。正在挂载只读卷……";
+              adminInput.disabled = true;
+              setTimeout(function () {
+                passwordBlock.classList.add("hidden");
+                grantedBlock.classList.remove("hidden");
+              }, 900);
+              setTimeout(function () {
+                if (grantWait) {
+                  grantWait.classList.add("hidden");
+                }
+                try {
+                  sessionStorage.setItem(ARCHIVE_UNLOCKED_KEY, "1");
+                  history.replaceState(null, "", "#archive");
+                } catch (eStore) {}
+                openArchiveUI();
+              }, 2200);
+            } else {
+              passwordFeedback.className = "e2-pw-feedback e2-pw-feedback--err";
+              passwordFeedback.textContent = "> AUTHENTICATION FAILED. 请重试。";
+            }
+          }
+        });
+
+        if (fileKeywordInput) {
+          fileKeywordInput.addEventListener("input", function () {
+            renderFileList();
+          });
+        }
+        if (filePreviewClose) {
+          filePreviewClose.addEventListener("click", closeFilePreviewViaHistory);
+        }
+        if (filePreviewBackdrop) {
+          filePreviewBackdrop.addEventListener("click", function (ev) {
+            if (ev.target === filePreviewBackdrop) {
+              closeFilePreviewViaHistory();
+            }
+          });
+        }
+        document.addEventListener("keydown", function (e) {
+          if (e.key === "Escape" && filePreviewBackdrop && !filePreviewBackdrop.classList.contains("hidden")) {
+            closeFilePreviewViaHistory();
+          }
+        });
+
+        window.addEventListener("popstate", function () {
+          if (previewGate) {
+            closeFilePreviewVisual();
+          }
+        });
+
+        function boot() {
+          document.body.classList.add("bg-black");
+          try {
+            if (sessionStorage.getItem(ARCHIVE_UNLOCKED_KEY) === "1") {
+              if (sealLayer) {
+                sealLayer.style.display = "none";
+              }
+              try {
+                history.replaceState(null, "", "#archive");
+              } catch (eH) {}
+              if (terminalLayer) {
+                terminalLayer.classList.add("hidden");
+              }
+              if (grantedBlock) {
+                grantedBlock.classList.add("hidden");
+              }
+              openArchiveUI();
+              return;
+            }
+          } catch (eS) {}
+          if (sealLayer) {
+            sealLayer.style.display = "";
+          }
+          setTimeout(function () {
+            if (sealCard) {
+              sealCard.classList.add("glitch-out");
+            }
+          }, 4000);
+          setTimeout(function () {
+            if (sealLayer) {
+              sealLayer.style.display = "none";
+            }
+            runTerminal();
+          }, 6500);
+        }
+
+        boot();
+      })();
+    </script>
+  </body>
+</html>

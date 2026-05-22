@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>云笔记 · 林岚</title>
+    <link rel="stylesheet" href="./assets/tailwind.css" />
+</head>
+  <body class="min-h-screen bg-slate-200 text-slate-700">
+    <main class="h-[100dvh] min-h-0 w-full overflow-hidden p-4">
+      <div
+        class="flex h-full min-h-0 flex-col overflow-hidden rounded-2xl border border-slate-300 bg-white shadow-sm md:flex-row"
+      >
+        <section
+          class="flex max-h-[50vh] min-h-0 w-full min-w-0 shrink-0 flex-col overflow-hidden border-b border-slate-200 bg-white md:h-full md:max-h-none md:w-[min(100%,22rem)] md:max-w-md md:shrink-0 md:border-b-0 md:border-r"
+        >
+          <header class="border-b border-slate-200 px-4 py-3">
+            <h2 class="text-2xl font-bold text-slate-900">最近笔记</h2>
+            <p id="diaryCount" class="mt-1 text-sm text-slate-500"></p>
+            <label for="searchDiaryInput" class="mt-3 block text-xs text-slate-500">搜索隐藏日记</label>
+            <input
+              id="searchDiaryInput"
+              class="mt-1 h-9 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm outline-none"
+              placeholder="输入日期或关键词"
+            />
+          </header>
+          <ul id="diaryList" class="min-h-0 flex-1 space-y-2 overflow-y-auto p-3 pb-8"></ul>
+          <p id="emptyDiaryHint" class="hidden px-4 pb-4 text-sm text-slate-500">没有找到对应日记。</p>
+        </section>
+
+        <article class="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
+          <div class="flex items-center justify-end border-b border-slate-200 px-4 py-3 text-slate-600">
+            <a id="backToWorkbenchLink" href="./001-oa-home.html" class="text-sm text-blue-600 hover:underline">返回工作台</a>
+          </div>
+
+          <div id="detailPanel" class="hidden h-full overflow-y-auto p-10">
+            <h3 id="detailTitle" class="text-2xl font-bold text-slate-900"></h3>
+            <p id="detailDate" class="mt-2 text-sm text-slate-500"></p>
+            <div id="detailBody" class="prose-article mt-6 max-w-3xl text-slate-700"></div>
+          </div>
+        </article>
+      </div>
+    </main>
+
+    <script src="./progressTracker.js"></script>
+    <script src="./assets/oaWorkbenchNav.js"></script>
+    <script>
+      const diaries = [
+        {
+          title: "日记1",
+          date: "2021年3月25日",
+          content: [
+            "今天转正了，薪水比我想象的还要高一点。发了工资第一件事就是把小敏下半年的学费和住宿费打过去。",
+            "她还问我在这边辛不辛苦，其实只要能供她安稳读完大学，现在也不算什么，相对于同学上夜班，现在倒还好。",
+            "公司虽然规矩多，但好在待遇是真的好。"
+          ]
+        },
+        {
+          title: "日记2",
+          date: "2021年3月28日",
+          content: [
+            "HR今天逼着签了一份补充保密协议，违约金竟然要三百万。当时看到数字手都抖了一下，但我根本没得选。",
+            "如果现在辞职，小敏下个月的生活费就断了。签就签吧，反正我一个小卡米拉，能接触什么秘密？",
+            "忍一忍，等小敏毕业就好了。"
+          ]
+        },
+        {
+          title: "日记3",
+          date: "2021年4月5日",
+          content: [
+            "原来在做地下代孕，这就是秘密。。。。。",
+            "我在<strong>A城日报</strong>里发现一些不得了的东西",
+            "和小敏电话，让她不要好奇女厕所那些小广告。",
+            "哎，合同期满我就要离职。"
+          ]
+        },
+        {
+          title: "日记4",
+          date: "2023年12月3日",
+          content: [
+            "好久没写日记了。",
+            "常常觉得自己身处地是屠宰场，从同类的身体里摘除一些会哭的血肉。",
+            "说是自愿来的，但她们根本不知道代价！打进身体里的针有三十多厘米，为了保证效果，往往会过度促排 + 频繁取卵，出问题会没命的！",
+            "上班时遇到一个年龄很小的女孩，问我生物公司怎么走，我说那是诈骗公司，所谓的高薪是骗局。只能帮她到这里了。",
+            "被张弛路过看到，他把我痛骂一顿，还说下次遇到要扣我工资。",
+            "呵，这个性骚扰惯犯，垃圾！",
+            "<strong>张驰</strong>真是个极度自负又懒惰的魔鬼，<strong>后台系统的密码</strong>甩给了我，让我干他的活。"
+          ]
+        },
+        {
+          title: "日记5",
+          date: "2023年12月20日",
+          content: ["那个女孩还是来了，她说她弟生病了。", "人各有命。"]
+        },
+        {
+          title: "日记6",
+          date: "2024年10月20日",
+          content: ["上周她死了，大出血，孩子也没了。", "我每晚都梦见她。"]
+        },
+        {
+          title: "日记7",
+          date: "2024年10月30日",
+          content: [
+            "他们把她送到了殡仪馆，可是骨灰又会……**同种骨**……真恶心",
+            "张弛一直都知道，他是个刽子手。"
+          ]
+        },
+        {
+          title: "日记8",
+          date: "2026年1月5日",
+          content: ["张弛污染样本的事被发现了，那些快要出生的孩子怎么办。", "我要疯了，我真的要疯了。", "小敏马上要毕业了。", "我是不是，可以解脱了。"]
+        },
+        {
+          title: "日记9",
+          date: "2026年1月8日",
+          content: [
+            "我在张弛的电脑上拍下了这些。",
+            '<img src="./assets/vip-list.png" alt="VIP名单截图" class="mx-auto my-2 w-full max-w-3xl rounded-lg border border-slate-200" />',
+            "我要终结这一切。"
+          ]
+        }
+      ];
+
+      const diaryList = document.getElementById("diaryList");
+      const diaryCount = document.getElementById("diaryCount");
+      const searchDiaryInput = document.getElementById("searchDiaryInput");
+      const emptyDiaryHint = document.getElementById("emptyDiaryHint");
+      const detailPanel = document.getElementById("detailPanel");
+      const detailTitle = document.getElementById("detailTitle");
+      const detailDate = document.getElementById("detailDate");
+      const detailBody = document.getElementById("detailBody");
+
+      /** 非 HTML 段落中的 **词** 渲染为加粗；含标签的片段保持原样 */
+      function formatDiaryParagraphHtml(line) {
+        const s = String(line);
+        if (/<[a-zA-Z!/?]/.test(s)) {
+          return s;
+        }
+        return s
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/\*\*(.+?)\*\*/g, '<strong class="font-semibold text-slate-900">$1</strong>');
+      }
+
+      /** 列表底部固定显示；命中 readTriggers 才可阅读正文，否则点击为「不可阅读」。曾在当前搜索下成功打开过的加密笔记会写入 localStorage，之后始终视为已解密。 */
+      const lockedDiaries = [
+        {
+          title: "加密笔记 1",
+          date: "已锁定",
+          readTriggers: ["arc-120627", "arc120627", "张弛", "后台", "后台密码"],
+          content: [
+            "password:120627 92TWSL66",
+            "名单上申请代孕的人，甚至都不是直接提供精子的人，赵某究竟是谁，难道这是“贿赂”？"
+          ]
+        },
+        {
+          title: "加密笔记2",
+          date: "已锁定",
+          readTriggers: ["log-1336890", "log1336890", "A城日报", "李宏辉"],
+          content: [
+            " 李宏辉（巨象科技 CEO）",
+            " 1982年7月20日",
+            "他和他的哥哥同年同月同日生",
+            "哥哥刚好比他大十岁",
+            "哥哥背景很深，Y市一手遮天的人物。",
+            '官网<a href="./011-partner-juxiang-site.html" class="text-blue-600 underline hover:text-blue-700">点击进入巨象科技官网</a>'
+          ]
+        }
+      ];
+
+      function normQ(s) {
+        return String(s || "")
+          .trim()
+          .toLowerCase();
+      }
+
+      function matchesAnyTrigger(q, triggers) {
+        const n = normQ(q);
+        if (!n) {
+          return false;
+        }
+        return triggers.some((t) => n.includes(normQ(t)));
+      }
+
+      function lockedDiaryReadable(d, q) {
+        return matchesAnyTrigger(q, d.readTriggers);
+      }
+
+      /** 与加密笔记 1 同路的关键词：出现时侧栏不展示「新日记」 */
+      const hideNewDiaryWhenMatches = ["张弛", "后台", "后台密码"];
+
+      const UNLOCK_STORAGE_KEY = "010_linlan_enc_unlocked_titles";
+
+      function loadPersistedUnlockedTitles() {
+        try {
+          const raw = localStorage.getItem(UNLOCK_STORAGE_KEY);
+          if (!raw) {
+            return new Set();
+          }
+          const arr = JSON.parse(raw);
+          return new Set(Array.isArray(arr) ? arr : []);
+        } catch {
+          return new Set();
+        }
+      }
+
+      function savePersistedUnlockedTitles(set) {
+        try {
+          localStorage.setItem(UNLOCK_STORAGE_KEY, JSON.stringify([...set]));
+        } catch {
+          /* 隐私模式等 */
+        }
+      }
+
+      const persistedUnlockedTitles = loadPersistedUnlockedTitles();
+
+      function lockedDiaryUnlockedForUi(d, q) {
+        return persistedUnlockedTitles.has(d.title) || lockedDiaryReadable(d, q);
+      }
+
+      const specialDiaries = [
+        {
+          title: "新日记",
+          date: "未记录",
+          trigger: ["张弛", "张驰", "密码", "张弛 密码", "张驰 密码"],
+          content: ["password:120627 92TWSL66"]
+        }
+      ];
+
+      let activeDiaryTitle = diaries[0].title;
+      let renderedDiaries = [];
+
+      function showDiary(diary) {
+        activeDiaryTitle = diary.title;
+        detailTitle.textContent = diary.title;
+        detailDate.textContent = "日期 " + diary.date;
+        detailPanel.classList.remove("hidden");
+        const q = searchDiaryInput.value;
+        if (Array.isArray(diary.readTriggers)) {
+          const keywordReadable = lockedDiaryReadable(diary, q);
+          const readable = keywordReadable || persistedUnlockedTitles.has(diary.title);
+          if (!readable) {
+            detailBody.innerHTML = '<p class="text-lg text-slate-600">不可阅读</p>';
+            return;
+          }
+          if (keywordReadable) {
+            persistedUnlockedTitles.add(diary.title);
+            savePersistedUnlockedTitles(persistedUnlockedTitles);
+          }
+        }
+        detailBody.innerHTML = diary.content
+          .map((line) => "<p>" + formatDiaryParagraphHtml(line) + "</p>")
+          .join("");
+      }
+
+      function renderDiaryList(keyword) {
+        const normalized = (keyword || "").trim();
+        const baseFiltered = diaries.filter((item) => {
+          const blob = [item.title, item.date, item.content.join(" ")].join(" ");
+          return blob.includes(normalized);
+        });
+        const triggeredSpecial = specialDiaries.filter((item) => {
+          if (item.title === "新日记" && matchesAnyTrigger(normalized, hideNewDiaryWhenMatches)) {
+            return false;
+          }
+          return item.trigger.some((token) => normalized.includes(token));
+        });
+        const filtered = normalized ? [...triggeredSpecial, ...baseFiltered] : baseFiltered;
+        const visibleLocked = lockedDiaries;
+        renderedDiaries = filtered.concat(visibleLocked);
+
+        const baseRows = filtered.map((item) => {
+          const isActive = item.title === activeDiaryTitle;
+          const style = isActive
+            ? "border-blue-400 bg-blue-50 text-blue-700"
+            : "border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50";
+          return (
+            '<li><button type="button" data-title="' +
+            item.title +
+            '" class="w-full rounded-lg border px-3 py-3 text-left text-sm ' +
+            style +
+            '">' +
+            item.title +
+            '<span class="mt-1 block text-xs text-slate-500">日期 ' +
+            item.date +
+            "</span></button></li>"
+          );
+        });
+        const scrollSpacer =
+          '<li aria-hidden="true" class="pointer-events-none min-h-[min(48vh,18rem)] shrink-0 list-none"></li>';
+        const lockRows = visibleLocked.map((item, lockIdx) => {
+          const isActive = item.title === activeDiaryTitle;
+          const stillLocked = !lockedDiaryUnlockedForUi(item, normalized);
+          const style = isActive
+            ? "border-blue-400 bg-blue-50 text-blue-700"
+            : "border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50";
+          const badge = stillLocked
+            ? '<span class="ml-1 text-amber-600" title="已加密">🔒</span>'
+            : '<span class="ml-1 text-emerald-600" title="已解密">🔓</span>';
+          const liCls = lockIdx === 0 ? "border-t border-dashed border-slate-200 pt-4" : "pt-2";
+          return (
+            '<li class="' +
+            liCls +
+            '">' +
+            '<button type="button" data-title="' +
+            item.title +
+            '" class="w-full rounded-lg border px-3 py-3 text-left text-sm ' +
+            style +
+            '"><span class="inline-flex items-center gap-1">' +
+            item.title +
+            badge +
+            '</span>' +
+            '<span class="mt-1 block text-xs text-slate-500">日期 ' +
+            item.date +
+            "</span></button></li>"
+          );
+        });
+
+        diaryList.innerHTML = baseRows.join("") + scrollSpacer + lockRows.join("");
+
+        emptyDiaryHint.classList.toggle("hidden", renderedDiaries.length > 0);
+
+        const activeLocked = lockedDiaries.find((l) => l.title === activeDiaryTitle);
+        if (activeLocked) {
+          showDiary(activeLocked);
+        }
+
+        Array.from(diaryList.querySelectorAll("button")).forEach((button) => {
+          button.addEventListener("click", () => {
+            const selected = renderedDiaries.find((item) => item.title === button.dataset.title);
+            if (!selected) {
+              return;
+            }
+            showDiary(selected);
+            renderDiaryList(searchDiaryInput.value);
+          });
+        });
+      }
+
+      searchDiaryInput.addEventListener("input", () => {
+        renderDiaryList(searchDiaryInput.value);
+      });
+
+      diaryCount.textContent = diaries.length + " 篇笔记";
+      renderDiaryList("");
+      showDiary(diaries.find((d) => d.title === activeDiaryTitle) || diaries[0]);
+    </script>
+  </body>
+</html>
+

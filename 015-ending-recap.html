@@ -1,0 +1,328 @@
+﻿<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>结局 · 复盘与选择</title>
+    <link rel="stylesheet" href="./assets/tailwind.css" />
+    <style>
+      @keyframes caret-blink {
+        0%,
+        49% {
+          opacity: 1;
+        }
+        50%,
+        100% {
+          opacity: 0;
+        }
+      }
+      .type-caret {
+        display: inline-block;
+        margin-left: 1px;
+        color: rgb(52 211 153);
+        font-weight: 300;
+        animation: caret-blink 1.05s step-end infinite;
+      }
+      .quiz-choice {
+        transition:
+          border-color 0.15s,
+          background-color 0.15s,
+          color 0.15s;
+      }
+    </style>
+  </head>
+  <body class="min-h-screen bg-slate-950 text-slate-100">
+    <main class="mx-auto max-w-3xl px-5 pb-16 pt-8 md:pt-10">
+      <section class="rounded-2xl border border-slate-700/90 bg-slate-900/80 p-6 shadow-2xl md:p-10">
+        <p class="text-xs tracking-[0.35em] text-slate-500">AFTER ENDING · 02</p>
+
+        <div id="introBlock" class="prose-article prose-article--dark prose-article--compact mt-6 min-h-[4rem]">
+          <p id="introLine1"></p>
+          <p id="introLine2"></p>
+        </div>
+
+        <div id="quizSection" class="mt-10 hidden border-t border-slate-700/80 pt-8">
+          <div id="quizQ1Block" class="quiz-q space-y-3">
+            <p class="text-sm leading-7 text-slate-200">
+              1. 无限生物公司所从事的辅助生殖业务实际上是____（A&nbsp;祭祀&nbsp;&nbsp;B&nbsp;代孕&nbsp;&nbsp;C&nbsp;性别验血）
+            </p>
+            <div class="flex flex-wrap gap-2">
+              <button type="button" class="quiz-choice rounded-lg border border-slate-600 bg-slate-800/90 px-3 py-2 text-sm text-slate-200 hover:border-emerald-500/70 hover:text-emerald-100" data-q="0" data-choice="A">A</button>
+              <button type="button" class="quiz-choice rounded-lg border border-slate-600 bg-slate-800/90 px-3 py-2 text-sm text-slate-200 hover:border-emerald-500/70 hover:text-emerald-100" data-q="0" data-choice="B">B</button>
+              <button type="button" class="quiz-choice rounded-lg border border-slate-600 bg-slate-800/90 px-3 py-2 text-sm text-slate-200 hover:border-emerald-500/70 hover:text-emerald-100" data-q="0" data-choice="C">C</button>
+            </div>
+          </div>
+
+          <div id="quizQ2Block" class="quiz-q mt-8 hidden space-y-3">
+            <p class="text-sm leading-7 text-slate-200">
+              2. 无限生物公司的种植牙材料来自于_____（A&nbsp;人骨&nbsp;&nbsp;B&nbsp;猪骨&nbsp;&nbsp;C&nbsp;泰德生物公司）
+            </p>
+            <div class="flex flex-wrap gap-2">
+              <button type="button" class="quiz-choice rounded-lg border border-slate-600 bg-slate-800/90 px-3 py-2 text-sm text-slate-200 hover:border-emerald-500/70 hover:text-emerald-100" data-q="1" data-choice="A">A</button>
+              <button type="button" class="quiz-choice rounded-lg border border-slate-600 bg-slate-800/90 px-3 py-2 text-sm text-slate-200 hover:border-emerald-500/70 hover:text-emerald-100" data-q="1" data-choice="B">B</button>
+              <button type="button" class="quiz-choice rounded-lg border border-slate-600 bg-slate-800/90 px-3 py-2 text-sm text-slate-200 hover:border-emerald-500/70 hover:text-emerald-100" data-q="1" data-choice="C">C</button>
+            </div>
+          </div>
+
+          <div id="quizQ3Block" class="quiz-q mt-8 hidden space-y-3">
+            <p class="text-sm leading-7 text-slate-200">
+              3. 赵宏强与巨象科技李宏辉的关系是——（A&nbsp;好友&nbsp;&nbsp;B&nbsp;亲兄弟&nbsp;&nbsp;C&nbsp;表兄弟）
+            </p>
+            <div class="flex flex-wrap gap-2">
+              <button type="button" class="quiz-choice rounded-lg border border-slate-600 bg-slate-800/90 px-3 py-2 text-sm text-slate-200 hover:border-emerald-500/70 hover:text-emerald-100" data-q="2" data-choice="A">A</button>
+              <button type="button" class="quiz-choice rounded-lg border border-slate-600 bg-slate-800/90 px-3 py-2 text-sm text-slate-200 hover:border-emerald-500/70 hover:text-emerald-100" data-q="2" data-choice="B">B</button>
+              <button type="button" class="quiz-choice rounded-lg border border-slate-600 bg-slate-800/90 px-3 py-2 text-sm text-slate-200 hover:border-emerald-500/70 hover:text-emerald-100" data-q="2" data-choice="C">C</button>
+            </div>
+          </div>
+
+          <p id="quizFeedback" class="mt-6 min-h-[1.25rem] text-sm text-rose-400" role="status"></p>
+
+          <div id="fillSection" class="mt-10 hidden border-t border-slate-700/70 pt-8">
+            <label for="killerAnswer" class="block text-sm font-medium text-emerald-200/95"
+              >4. 你认为真正杀死你姐姐的是：</label>
+            <div class="mt-3 flex flex-col gap-3 sm:flex-row sm:items-center">
+              <input
+                id="killerAnswer"
+                type="text"
+                maxlength="240"
+                placeholder="写下你的答案…"
+                class="min-w-0 flex-1 rounded-lg border border-slate-600 bg-slate-950/80 px-3 py-2.5 text-sm text-slate-100 outline-none ring-emerald-500/30 placeholder:text-slate-500 focus:border-emerald-500/60 focus:ring-2"
+              />
+              <button
+                id="fillContinueBtn"
+                type="button"
+                class="shrink-0 rounded-lg border border-emerald-600/65 bg-emerald-950/50 px-4 py-2.5 text-sm font-medium text-emerald-100 hover:bg-emerald-900/45"
+              >
+                继续
+              </button>
+            </div>
+            <p id="fillFeedback" class="mt-2 min-h-[1.25rem] text-sm text-rose-400" role="status"></p>
+          </div>
+        </div>
+
+        <div id="outroBlock" class="prose-article prose-article--dark prose-article--compact mt-12 hidden border-t border-slate-700/80 pt-8"></div>
+      </section>
+
+      <div class="mt-8 flex flex-wrap justify-center gap-3">
+        <a id="replayLink" href="./index.html" class="inline-flex rounded-lg border border-slate-600 px-4 py-2 text-xs text-slate-300 hover:bg-slate-800">
+          重新游玩
+        </a>
+      </div>
+    </main>
+
+    <script src="./progressTracker.js"></script>
+    <script src="./clearGameProgress.js"></script>
+    <script src="./blockedWords015.js"></script>
+    <script>
+      (function () {
+        var replay = document.getElementById("replayLink");
+        if (replay) {
+          replay.addEventListener("click", function (event) {
+            event.preventDefault();
+            if (typeof window.clearAllGameProgress === "function") {
+              window.clearAllGameProgress();
+            }
+            window.location.href = "./index.html";
+          });
+        }
+
+        var INTRO_LINES = [
+          "这就是你全部能够搜集到的信息。",
+          "你抽丝拔茧，寻找其中的逻辑关联，并回答最初困扰你的问题："
+        ];
+
+        var OUTRO_PARAGRAPHS = [
+          "你抓住了罪恶的尾巴，罪恶转身，淡黄色复眼与你对视。",
+          "还要继续前进吗？你需要证明张弛并非自杀，证明无限生物公司与湖山殡仪馆存在交易关系，证明商人通过生物公司为官员代孕，证明背后站着Y市一手遮天的人物。",
+          "沉睡在服务器中的电子材料是证据，没有错，但他们完全可以被证伪，被说成只是某个无聊的员工利用业余时间制造的阴谋论。",
+          "思绪如无头苍蝇，你打开电脑，决定将自己的经历制作成一款游戏。",
+          "希望警醒年轻的女孩，希望更多人能够给你提供思路。",
+          "于是你在键盘上敲击下——",
+          "《生物公司杀人案》。"
+        ];
+
+        var CORRECT = ["B", "A", "B"];
+
+        var BLOCKED_WORDS = null;
+
+        function escapeRegExp(s) {
+          return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+        }
+
+        function answerHitsBlocked(text, words) {
+          if (!text || !words || !words.length) return false;
+          for (var i = 0; i < words.length; i++) {
+            var w = words[i];
+            if (!w) continue;
+            if (/[\u4e00-\u9fff]/.test(w)) {
+              if (text.indexOf(w) !== -1) return true;
+            } else if (/^[a-zA-Z0-9]+$/.test(w)) {
+              try {
+                var re = new RegExp("\\b" + escapeRegExp(w) + "\\b", "i");
+                if (re.test(text)) return true;
+              } catch (eRe) {}
+            } else {
+              if (text.indexOf(w) !== -1) return true;
+            }
+          }
+          return false;
+        }
+
+        function ensureBlockedWords() {
+          if (BLOCKED_WORDS && BLOCKED_WORDS.length) return Promise.resolve(BLOCKED_WORDS);
+          var g = typeof window !== "undefined" && window.GAME015_BLOCKED_WORDS;
+          BLOCKED_WORDS = g && g.length ? g : [];
+          return Promise.resolve(BLOCKED_WORDS);
+        }
+
+        function wait(ms) {
+          return new Promise(function (resolve) {
+            setTimeout(resolve, ms);
+          });
+        }
+
+        function attachCaret(paragraphEl) {
+          var caret = document.createElement("span");
+          caret.className = "type-caret";
+          caret.textContent = "▍";
+          paragraphEl.appendChild(caret);
+          return caret;
+        }
+
+        function typeInto(paragraphEl, fullText, baseDelay) {
+          return new Promise(function (resolve) {
+            paragraphEl.innerHTML = "";
+            var caret = attachCaret(paragraphEl);
+            var i = 0;
+            function tick() {
+              if (i < fullText.length) {
+                var ch = fullText.charAt(i);
+                caret.before(document.createTextNode(ch));
+                i += 1;
+                var delay = baseDelay + Math.floor(Math.random() * 14);
+                if (/[，。；、：！？“”——]/.test(ch)) {
+                  delay += 55;
+                }
+                setTimeout(tick, delay);
+              } else {
+                if (caret.parentNode) caret.remove();
+                resolve();
+              }
+            }
+            tick();
+          });
+        }
+
+        async function runIntro() {
+          var introLine1 = document.getElementById("introLine1");
+          var introLine2 = document.getElementById("introLine2");
+          await typeInto(introLine1, INTRO_LINES[0], 42);
+          await wait(380);
+          await typeInto(introLine2, INTRO_LINES[1], 42);
+          await wait(520);
+          document.getElementById("quizSection").classList.remove("hidden");
+          document.getElementById("quizFeedback").textContent = "";
+        }
+
+        var currentQ = 0;
+
+        function onChoiceClick(ev) {
+          var btn = ev.target.closest("[data-choice]");
+          if (!(btn instanceof HTMLButtonElement) || btn.disabled) return;
+          var q = parseInt(btn.getAttribute("data-q"), 10);
+          var choice = btn.getAttribute("data-choice");
+          var feedback = document.getElementById("quizFeedback");
+          if (q !== currentQ || !choice) return;
+          if (choice !== CORRECT[currentQ]) {
+            feedback.textContent = "你重新组织思路……";
+            return;
+          }
+          feedback.textContent = "";
+          var blockIds = ["quizQ1Block", "quizQ2Block", "quizQ3Block"];
+          var btns = document.querySelectorAll("#" + blockIds[currentQ] + " .quiz-choice");
+          btns.forEach(function (b) {
+            b.disabled = true;
+            b.classList.add("opacity-60");
+          });
+          currentQ += 1;
+          if (currentQ < 3) {
+            document.getElementById(blockIds[currentQ]).classList.remove("hidden");
+          } else {
+            document.getElementById("fillSection").classList.remove("hidden");
+            var fillFb = document.getElementById("fillFeedback");
+            if (fillFb) fillFb.textContent = "";
+            ensureBlockedWords();
+            var input = document.getElementById("killerAnswer");
+            if (input) setTimeout(function () {
+              input.focus();
+            }, 120);
+          }
+        }
+
+        async function runOutro() {
+          var wrap = document.getElementById("outroBlock");
+          wrap.classList.remove("hidden");
+          wrap.innerHTML = "";
+          for (var pi = 0; pi < OUTRO_PARAGRAPHS.length; pi++) {
+            var p = document.createElement("p");
+            p.className = "";
+            wrap.appendChild(p);
+            await typeInto(p, OUTRO_PARAGRAPHS[pi], 40);
+            await wait(280);
+          }
+        }
+
+        function wireQuiz() {
+          document.querySelectorAll(".quiz-choice").forEach(function (b) {
+            b.addEventListener("click", onChoiceClick);
+          });
+          function beginOutroAfterFill() {
+            var input = document.getElementById("killerAnswer");
+            var fillFb = document.getElementById("fillFeedback");
+            if (fillFb) fillFb.textContent = "";
+            var raw = input ? input.value.trim() : "";
+            ensureBlockedWords().then(function (words) {
+              if (raw && words.length && answerHitsBlocked(raw, words)) {
+                if (fillFb) fillFb.textContent = "请重新输入";
+                if (input) {
+                  input.value = "";
+                  input.focus();
+                }
+                return;
+              }
+              document.getElementById("fillSection").classList.add("hidden");
+              document.getElementById("quizFeedback").textContent = "";
+              if (fillFb) fillFb.textContent = "";
+              runOutro();
+            });
+          }
+          document.getElementById("fillContinueBtn").addEventListener("click", beginOutroAfterFill);
+          var killerEl = document.getElementById("killerAnswer");
+          if (killerEl) {
+            killerEl.addEventListener("input", function () {
+              var fillFb = document.getElementById("fillFeedback");
+              if (fillFb) fillFb.textContent = "";
+            });
+            killerEl.addEventListener("keydown", function (e) {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                beginOutroAfterFill();
+              }
+            });
+          }
+        }
+
+        wireQuiz();
+
+        function bootIntro() {
+          runIntro();
+        }
+        if (document.readyState === "loading") {
+          document.addEventListener("DOMContentLoaded", bootIntro);
+        } else {
+          bootIntro();
+        }
+      })();
+    </script>
+  </body>
+</html>

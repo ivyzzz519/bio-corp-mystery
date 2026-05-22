@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>工作台 · 张弛账号</title>
+    <link rel="stylesheet" href="./assets/tailwind.css" />
+</head>
+  <body class="min-h-screen bg-slate-100 text-slate-700">
+    <div class="flex min-h-screen flex-col md:flex-row">
+      <aside class="w-full shrink-0 border-b border-slate-200 bg-white md:w-60 md:border-b-0 md:border-r">
+        <div class="border-b border-slate-100 px-4 py-4">
+          <h1 class="text-sm font-bold text-slate-800">无限生物科技有限公司</h1>
+          <p class="mt-1 text-xs text-slate-400">一体化平台</p>
+        </div>
+        <div class="px-3 py-3 text-xs text-slate-400">OA 办公系统（张弛账号）</div>
+        <nav class="px-3 text-sm">
+          <button data-disabled="该模块无权限访问" class="mb-1 block w-full rounded-lg bg-blue-50 px-3 py-2 text-left font-medium text-slate-400" type="button">工作台（禁用）</button>
+          <button class="mb-1 block w-full rounded-lg px-3 py-2 text-left text-blue-600 hover:bg-blue-50" type="button">HIS病患系统（可查看）</button>
+          <a class="mb-1 block rounded-lg px-3 py-2 text-slate-500 hover:bg-slate-50" href="./mailbox.html?view=zhangchi">公司邮箱</a>
+          <button data-disabled="该模块无权限访问" class="mb-1 block w-full rounded-lg px-3 py-2 text-left text-slate-400" type="button">公告通知（禁用）</button>
+          <button data-disabled="该模块无权限访问" class="mb-1 block w-full rounded-lg px-3 py-2 text-left text-slate-400" type="button">文件管理（禁用）</button>
+        </nav>
+      </aside>
+
+      <main class="flex-1 min-w-0 p-4 sm:p-5">
+        <div class="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-xl bg-white px-4 py-3 shadow-sm">
+          <div class="shrink-0">
+            <span class="rounded-md bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-600">OA 办公系统 · 张弛账户</span>
+          </div>
+          <div class="flex min-w-0 w-full flex-1 max-w-full items-center rounded-lg border border-slate-200 bg-slate-50 px-3 md:min-w-[260px] md:max-w-[480px]">
+            <input
+              id="oaSearchInput"
+              type="text"
+              placeholder="搜索 工单、公告、员工、文件..."
+              class="h-9 w-full bg-transparent text-sm outline-none"
+            />
+            <button id="oaSearchButton" class="text-xs font-medium text-blue-600" type="button">搜索</button>
+          </div>
+          <button id="accountButton" class="shrink-0 flex items-center gap-2 rounded-lg px-2 py-1 hover:bg-slate-100" type="button">
+            <span id="accountAvatar" class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-blue-600 text-xs font-bold text-white">张</span>
+            <div class="text-right">
+              <p id="accountName" class="text-xs font-semibold text-slate-700">张弛</p>
+              <p id="accountSubtitle" class="text-[11px] text-slate-400">访客账号 · 权限受限</p>
+            </div>
+          </button>
+        </div>
+
+        <header class="rounded-2xl bg-gradient-to-r from-brandBlue to-brandTeal px-6 py-5 text-white shadow-sm">
+          <p class="text-xs text-blue-100">已登录账号：张弛（仅开放 HIS 病患系统查看与公司邮箱）</p>
+          <div class="mt-2 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div class="min-w-0">
+              <h2 class="text-2xl font-bold md:text-3xl">欢迎回来，张弛</h2>
+              <p class="mt-1 break-words text-xs text-blue-100">当前可查看 HIS 值班表/病历表，其余 OA 模块无权限</p>
+            </div>
+            <div class="shrink-0 self-start rounded-full bg-white/15 px-4 py-2 text-sm sm:self-auto">权限状态：受限</div>
+          </div>
+        </header>
+
+        <p id="disabledHint" class="mt-4 hidden rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-700"></p>
+
+        <section class="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4">
+          <div class="rounded-xl border border-slate-200 bg-white p-4">
+            <p class="text-xs text-slate-400">可访问模块</p>
+            <p class="mt-2 text-4xl font-semibold text-slate-800">2</p>
+          </div>
+          <div class="rounded-xl border border-slate-200 bg-white p-4">
+            <p class="text-xs text-slate-400">受限模块</p>
+            <p class="mt-2 text-4xl font-semibold text-slate-800">4</p>
+          </div>
+          <div class="rounded-xl border border-slate-200 bg-white p-4">
+            <p class="text-xs text-slate-400">可见工单</p>
+            <p class="mt-2 text-4xl font-semibold text-slate-800">4</p>
+          </div>
+          <div class="rounded-xl border border-slate-200 bg-white p-4">
+            <p class="text-xs text-slate-400">可疑文件</p>
+            <p class="mt-2 text-4xl font-semibold text-slate-800">1</p>
+          </div>
+        </section>
+
+        <section class="mt-4 grid grid-cols-1 gap-4 xl:grid-cols-[2fr,1.2fr]">
+          <div class="space-y-4">
+            <article class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+              <h3 class="mb-3 text-sm font-semibold text-slate-800">模块权限状态</h3>
+              <ul class="space-y-2 text-sm text-slate-600">
+                <li>工作台：无权限</li>
+                <li>公告通知：无权限</li>
+                <li>文件管理：无权限</li>
+                <li>HIS 病患系统：可查看值班表与病历表</li>
+                <li>销售系统：无权限</li>
+              </ul>
+            </article>
+
+            <article class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+              <div class="mb-3 flex items-center justify-between">
+                <h3 class="text-sm font-semibold text-slate-800">新闻动态</h3>
+              </div>
+              <div class="space-y-3">
+                <a href="./002-news-industrial-visit.html" class="block rounded-xl border border-teal-100 bg-teal-50/40 p-3 hover:bg-teal-50">
+                  <p class="text-xs text-slate-400">公司要闻</p>
+                  <p class="mt-1 text-sm font-semibold text-slate-800">无限生物科技有限公司高层调研湖山县工业园，深耕生物新材料产业</p>
+                  <p class="mt-1 text-xs text-teal-600">阅读全文 ></p>
+                </a>
+                <a href="./003-notice-lifeguard-training.html" class="block rounded-xl border border-slate-100 p-3 hover:bg-slate-50">
+                  <p class="text-xs text-slate-400">员工活动</p>
+                  <p class="mt-1 text-sm font-semibold text-slate-800">关于开展第一届员工水上救生知识培训的通知</p>
+                  <p class="mt-1 text-xs text-teal-600">阅读全文 ></p>
+                </a>
+              </div>
+            </article>
+
+            <article class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+              <div class="mb-3 flex items-center justify-between">
+                <h3 class="text-sm font-semibold text-slate-800">HIS病患系统 - 值班表与病历表（只读）</h3>
+                <span class="text-xs text-slate-400">岗位：辅助生殖</span>
+              </div>
+              <div class="overflow-x-auto">
+                <table class="w-full min-w-[620px] border-collapse text-sm">
+                  <thead>
+                    <tr class="bg-slate-50 text-left text-xs text-slate-500">
+                      <th class="border border-slate-200 px-3 py-2">日期</th>
+                      <th class="border border-slate-200 px-3 py-2">值班人员</th>
+                      <th class="border border-slate-200 px-3 py-2">辅助生殖处置</th>
+                      <th class="border border-slate-200 px-3 py-2">结果</th>
+                      <th class="border border-slate-200 px-3 py-2">备注</th>
+                    </tr>
+                  </thead>
+                  <tbody class="text-slate-700">
+                    <tr>
+                      <td class="border border-slate-200 px-3 py-2">2026-04-12</td>
+                      <td class="border border-slate-200 px-3 py-2">张弛</td>
+                      <td class="border border-slate-200 px-3 py-2">胚胎移植辅助流程</td>
+                      <td class="border border-slate-200 px-3 py-2 text-rose-600">流产</td>
+                      <td class="border border-slate-200 px-3 py-2">随访中</td>
+                    </tr>
+                    <tr>
+                      <td class="border border-slate-200 px-3 py-2">2026-04-15</td>
+                      <td class="border border-slate-200 px-3 py-2">张弛</td>
+                      <td class="border border-slate-200 px-3 py-2">IVF 术后护理记录</td>
+                      <td class="border border-slate-200 px-3 py-2 text-rose-600">流产</td>
+                      <td class="border border-slate-200 px-3 py-2">结案</td>
+                    </tr>
+                    <tr>
+                      <td class="border border-slate-200 px-3 py-2">2026-04-18</td>
+                      <td class="border border-slate-200 px-3 py-2">张弛</td>
+                      <td class="border border-slate-200 px-3 py-2">促排周期监测与取卵配合</td>
+                      <td class="border border-slate-200 px-3 py-2 text-rose-600">流产</td>
+                      <td class="border border-slate-200 px-3 py-2">结案</td>
+                    </tr>
+                    <tr>
+                      <td class="border border-slate-200 px-3 py-2">2026-04-21</td>
+                      <td class="border border-slate-200 px-3 py-2">张弛</td>
+                      <td class="border border-slate-200 px-3 py-2">冷冻胚胎复苏配台</td>
+                      <td class="border border-slate-200 px-3 py-2 text-rose-600">流产</td>
+                      <td class="border border-slate-200 px-3 py-2">随访中</td>
+                    </tr>
+                    <tr class="bg-emerald-50/60">
+                      <td class="border border-slate-200 px-3 py-2">2026-04-22</td>
+                      <td class="border border-slate-200 px-3 py-2">张弛</td>
+                      <td class="border border-slate-200 px-3 py-2">辅助分娩转运协同</td>
+                      <td class="border border-slate-200 px-3 py-2 text-emerald-700">已出生</td>
+                      <td class="border border-slate-200 px-3 py-2">婴儿A</td>
+                    </tr>
+                    <tr class="bg-emerald-50/60">
+                      <td class="border border-slate-200 px-3 py-2">2026-04-22</td>
+                      <td class="border border-slate-200 px-3 py-2">张弛</td>
+                      <td class="border border-slate-200 px-3 py-2">新生儿评估协同</td>
+                      <td class="border border-slate-200 px-3 py-2 text-emerald-700">已出生</td>
+                      <td class="border border-slate-200 px-3 py-2">婴儿B</td>
+                    </tr>
+                    <tr class="bg-emerald-50/60">
+                      <td class="border border-slate-200 px-3 py-2">2026-04-22</td>
+                      <td class="border border-slate-200 px-3 py-2">张弛</td>
+                      <td class="border border-slate-200 px-3 py-2">产后病案登记</td>
+                      <td class="border border-slate-200 px-3 py-2 text-emerald-700">已出生</td>
+                      <td class="border border-slate-200 px-3 py-2">婴儿C</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <p class="mt-3 text-xs text-slate-500">统计摘要：本批值班样本中，记录结果约 80% 为流产，3 例为已出生婴儿。</p>
+            </article>
+          </div>
+
+          <div class="space-y-4">
+            <article class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+              <h3 class="mb-3 text-sm font-semibold text-slate-800">可用入口</h3>
+              <a href="./mailbox.html?view=zhangchi" class="block rounded-lg border border-blue-100 bg-blue-50/60 px-3 py-3 text-sm text-slate-700 hover:bg-blue-50">
+                公司邮箱（可访问）
+              </a>
+              <div class="mt-2 rounded-lg border border-blue-100 bg-blue-50/40 px-3 py-3 text-sm text-slate-700">
+                HIS 病患系统（只读可见）
+              </div>
+            </article>
+
+            <article class="rounded-2xl border border-rose-200 bg-rose-50/40 p-4 shadow-sm">
+              <div class="mb-3 flex items-center justify-between">
+                <h3 class="text-sm font-semibold text-rose-700">工单记录（可见4条）</h3>
+                <span class="text-xs text-rose-500">日期：2026-04-22</span>
+              </div>
+              <div class="space-y-2 text-sm">
+                <div class="rounded-lg border border-rose-200 bg-white px-3 py-3">
+                  <p class="font-semibold text-slate-800">工单 #ZX-422-01</p>
+                  <p class="mt-1 text-slate-600">婴儿A：上级判定“其父不明 销毁”，已交由长讯物流公司处理。</p>
+                </div>
+                <div class="rounded-lg border border-rose-200 bg-white px-3 py-3">
+                  <p class="font-semibold text-slate-800">工单 #ZX-422-02</p>
+                  <p class="mt-1 text-slate-600">婴儿B：上级判定“其父不明 销毁”，已交由元福物流公司处理。</p>
+                </div>
+                <div class="rounded-lg border border-rose-200 bg-white px-3 py-3">
+                  <p class="font-semibold text-slate-800">工单 #ZX-422-03</p>
+                  <p class="mt-1 text-slate-600">婴儿C：上级判定“其父不明 销毁”，已交由长讯物流公司处理。</p>
+                </div>
+                <div class="rounded-lg border border-amber-200 bg-amber-50/60 px-3 py-3">
+                  <div class="flex items-center justify-between">
+                    <p class="font-semibold text-slate-800">OA单：编号 B-09B</p>
+                    <p class="text-[11px] text-white">单号 OA-2026-04-22-09B</p>
+                  </div>
+                  <div class="mt-2 flex items-center justify-between rounded-md border border-amber-200 bg-white px-2 py-2">
+                    <div>
+                      <p class="text-xs font-medium text-slate-700">B-09B_ultrasound_preview.dcm</p>
+                      <p class="text-[11px] text-slate-500">文件大小：28MB</p>
+                    </div>
+                    <button
+                      id="oaDownloadButton"
+                      type="button"
+                      data-download-path="./downloads/B-09B_ultrasound_preview.dcm"
+                      data-download-name="B-09B_ultrasound_preview.dcm"
+                      class="ml-3 shrink-0 rounded-md bg-amber-500 px-3 py-1.5 text-xs font-semibold text-white hover:bg-amber-600"
+                    >
+                      下载
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </article>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div id="accountMenu" class="fixed right-8 top-16 z-30 hidden w-44 rounded-xl border border-slate-200 bg-white p-2 shadow-lg">
+      <button id="logoutButton" class="w-full rounded-lg px-3 py-2 text-left text-sm text-slate-700 hover:bg-slate-50" type="button">
+        退出
+      </button>
+      <button id="loginButton" class="hidden w-full rounded-lg px-3 py-2 text-left text-sm text-slate-700 hover:bg-slate-50" type="button">
+        登录
+      </button>
+    </div>
+
+    <div id="loginModal" class="fixed inset-0 z-40 hidden items-center justify-center bg-slate-900/40 px-4">
+      <div class="w-full max-w-md rounded-2xl bg-white p-5 shadow-xl">
+        <div class="mb-4 flex items-center justify-between">
+          <h3 class="text-base font-semibold text-slate-800">用户登录</h3>
+          <button id="loginCloseButton" class="text-sm text-slate-400 hover:text-slate-600" type="button">关闭</button>
+        </div>
+        <label class="text-xs text-slate-500">账号</label>
+        <input id="loginAccountInput" class="mt-2 h-10 w-full rounded-lg border border-slate-200 px-3 text-sm outline-none" placeholder="请输入账号" />
+        <label class="mt-3 block text-xs text-slate-500">密码</label>
+        <input id="loginPasswordInput" type="password" class="mt-2 h-10 w-full rounded-lg border border-slate-200 px-3 text-sm outline-none" placeholder="请输入密码" />
+        <p id="loginFeedback" class="mt-3 text-xs text-rose-600"></p>
+        <button id="loginSubmitButton" class="mt-2 rounded-lg bg-blue-600 px-4 py-2 text-sm text-white" type="button">登录</button>
+      </div>
+    </div>
+
+    <button
+      id="downloadTrayButton"
+      type="button"
+      class="fixed bottom-5 right-5 z-30 hidden items-center gap-2 rounded-xl border border-emerald-200 bg-white px-3 py-2 text-xs text-slate-700 shadow-lg hover:bg-emerald-50"
+    >
+      <span class="inline-flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500 text-white">↓</span>
+      <span id="downloadTrayText">下载完成</span>
+    </button>
+
+    <div id="virtualExplorerModal" class="fixed inset-0 z-40 hidden items-center justify-center bg-slate-900/40 px-4">
+      <div class="w-full max-w-3xl rounded-2xl bg-white shadow-2xl">
+        <div class="flex items-center justify-between rounded-t-2xl border-b border-slate-200 bg-slate-50 px-4 py-3">
+          <div>
+            <p class="text-sm font-semibold text-slate-800">下载目录</p>
+            <p id="virtualPathText" class="text-xs text-slate-500">C:\Users\Player\Downloads\Case_0422\</p>
+          </div>
+          <button id="virtualExplorerCloseButton" class="text-xs text-slate-500 hover:text-slate-700" type="button">关闭</button>
+        </div>
+        <div class="space-y-3 p-4">
+          <div id="virtualFileEntry" class="rounded-lg border border-slate-200 bg-white px-3 py-3">
+            <div class="flex items-center justify-between">
+              <div>
+                <p id="virtualFileName" class="text-sm font-semibold text-slate-800">B-09B_ultrasound_preview.dcm</p>
+                <p class="text-xs text-slate-500">大小：28MB · 状态：下载完成</p>
+              </div>
+              <button id="viewFileButton" type="button" class="rounded-md border border-blue-200 bg-blue-50 px-3 py-1.5 text-xs text-blue-700 hover:bg-blue-100">
+                查看文件
+              </button>
+            </div>
+            <div id="renameEditor" class="mt-2 hidden items-center gap-2">
+              <input id="renameInput" type="text" class="h-8 w-full rounded-md border border-slate-300 px-2 text-xs text-slate-700 outline-none focus:border-blue-400" />
+              <button id="renameConfirmButton" type="button" class="rounded-md border border-emerald-200 bg-emerald-50 px-2 py-1 text-xs text-emerald-700 hover:bg-emerald-100">确定</button>
+              <button id="renameCancelButton" type="button" class="rounded-md border border-slate-200 bg-slate-50 px-2 py-1 text-xs text-slate-600 hover:bg-slate-100">取消</button>
+            </div>
+          </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <button id="extractZipButton" type="button" class="rounded-md border border-amber-200 bg-amber-50 px-3 py-1.5 text-xs text-amber-700 hover:bg-amber-100">
+              解压文件
+            </button>
+            <p id="virtualActionHint" class="text-xs text-slate-500"></p>
+          </div>
+          <div id="fileContextMenu" class="fixed z-50 hidden min-w-[200px] rounded-lg border border-slate-200 bg-white py-1 text-xs shadow-lg">
+            <button data-action="rename" class="block w-full px-3 py-1.5 text-left text-slate-700 hover:bg-slate-100" type="button">重命名</button>
+            <div class="my-1 border-t border-slate-100"></div>
+            <button data-action="open-zip-app" class="block w-full px-3 py-1.5 text-left text-slate-700 hover:bg-slate-100" type="button">打开方式：压缩王.zip</button>
+          </div>
+          <div id="extractedFilesPanel" class="hidden rounded-lg border border-emerald-200 bg-emerald-50/50 px-3 py-3">
+            <p class="text-xs font-semibold text-emerald-700">解压结果</p>
+            <ul class="mt-2 space-y-1 text-sm text-slate-700">
+              <li>B-09B_ultrasound_bw.png</li>
+              <li>
+                <button
+                  id="openExtractedWavButton"
+                  type="button"
+                  class="text-left text-blue-700 underline decoration-blue-400/60 underline-offset-2 hover:text-blue-800"
+                >
+                  把柄.wav（20 分钟）· 点击播放
+                </button>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="audioRecordModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/60 px-4">
+      <div class="w-full max-w-3xl rounded-2xl border border-slate-700 bg-slate-900 text-slate-100 shadow-2xl">
+        <div class="flex items-center justify-between rounded-t-2xl border-b border-slate-700 bg-slate-800/80 px-4 py-3">
+          <div>
+            <p class="text-sm font-semibold">录音内容</p>
+            <p class="text-xs text-slate-300">把柄.wav · 声纹片段提取（部分缺失）</p>
+          </div>
+          <button id="audioRecordCloseButton" type="button" class="rounded-md border border-slate-600 bg-slate-700 px-2 py-1 text-xs text-slate-200 hover:bg-slate-600">
+            关闭
+          </button>
+        </div>
+        <div class="border-b border-slate-700 px-4 py-4">
+          <div class="rounded-xl border border-emerald-500/20 bg-slate-950 px-3 py-3">
+            <div id="audioWaveBars" class="flex h-24 w-full min-w-0 items-end gap-px overflow-hidden"></div>
+          </div>
+        </div>
+        <div class="px-4 py-4">
+          <div id="audioTranscriptBox" class="prose-article prose-article--dark prose-article--compact h-52 overflow-y-auto rounded-xl border border-slate-700 bg-slate-950/80 p-3"></div>
+        </div>
+      </div>
+    </div>
+
+    <script src="./progressTracker.js"></script>
+    <script src="./assets/oaWorkbenchNav.js"></script>
+    <script src="./gameData.js"></script>
+    <script src="./gameEngine.js"></script>
+    <script src="./page012Engine.js"></script>
+  </body>
+</html>

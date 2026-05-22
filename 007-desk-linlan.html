@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>工作台 · 林岚账号</title>
+    <link rel="stylesheet" href="./assets/tailwind.css" />
+</head>
+  <body class="min-h-screen bg-slate-100 text-slate-700">
+    <div class="flex min-h-screen flex-col md:flex-row">
+      <aside class="w-full shrink-0 border-b border-slate-200 bg-white md:w-60 md:border-b-0 md:border-r">
+        <div class="border-b border-slate-100 px-4 py-4">
+          <h1 class="text-sm font-bold text-slate-800">无限生物科技有限公司</h1>
+          <p class="mt-1 text-xs text-slate-400">一体化平台</p>
+        </div>
+        <div class="px-3 py-3 text-xs text-slate-400">OA 办公系统（账号受限）</div>
+        <nav class="px-3 text-sm">
+          <a class="mb-1 block rounded-lg bg-blue-50 px-3 py-2 font-medium text-blue-600" href="./007-desk-linlan.html">工作台</a>
+          <a class="mb-1 block rounded-lg px-3 py-2 text-slate-500 hover:bg-slate-50" href="./mailbox.html?view=linlan">公司邮箱</a>
+          <button data-disabled="该模块已被禁用" class="mb-1 w-full rounded-lg px-3 py-2 text-left text-slate-400" type="button">文件管理（禁用）</button>
+        </nav>
+      </aside>
+
+      <main class="flex-1 min-w-0 p-4 sm:p-5">
+        <div class="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-xl bg-white px-4 py-3 shadow-sm">
+          <div class="shrink-0">
+            <span class="rounded-md bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-600">OA 办公系统 · 受限账户</span>
+          </div>
+          <div class="flex min-w-0 w-full flex-1 max-w-full items-center rounded-lg border border-slate-200 bg-slate-50 px-3 md:min-w-[260px] md:max-w-[480px]">
+            <input
+              id="oaSearchInput"
+              type="text"
+              placeholder="搜索 工单、公告、员工、文件..."
+              class="h-9 w-full bg-transparent text-sm outline-none"
+            />
+            <button id="oaSearchButton" class="text-xs font-medium text-blue-600" type="button">搜索</button>
+          </div>
+          <button id="accountButton" class="shrink-0 flex items-center gap-2 rounded-lg px-2 py-1 hover:bg-slate-100" type="button">
+            <span id="accountAvatar" class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-blue-600 text-xs font-bold text-white">林</span>
+            <div class="text-right">
+              <p id="accountName" class="text-xs font-semibold text-slate-700">林岚</p>
+              <p id="accountSubtitle" class="text-[11px] text-slate-400">辅助生殖中心-助理 · 19905678235</p>
+            </div>
+          </button>
+        </div>
+
+        <header class="rounded-2xl bg-gradient-to-r from-brandBlue to-brandTeal px-6 py-5 text-white shadow-sm">
+          <p class="text-xs text-blue-100">已登录账号：林岚（受限权限）</p>
+          <div class="mt-2 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div class="min-w-0">
+              <h2 class="text-2xl font-bold md:text-3xl">欢迎回来，林岚</h2>
+              <p class="mt-1 break-words text-xs text-blue-100">辅助生殖中心-助理 | 联系手机号 19905678235</p>
+            </div>
+            <div class="shrink-0 self-start rounded-full bg-white/15 px-4 py-2 text-sm sm:self-auto">绝大部分模块已禁用</div>
+          </div>
+        </header>
+
+        <p id="disabledHint" class="mt-4 hidden rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-700"></p>
+
+        <section class="mt-4 grid grid-cols-1 gap-4 xl:grid-cols-[2fr,1.2fr]">
+          <div class="space-y-4">
+            <article class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+              <div class="mb-4 flex items-center justify-between">
+                <h3 class="text-sm font-semibold text-slate-800">工单列表（10）</h3>
+                <span class="text-xs text-slate-400">全部禁用</span>
+              </div>
+              <div class="space-y-2 text-sm">
+                <button data-disabled="该工单不可查看" class="w-full rounded-lg border border-slate-100 px-3 py-2 text-left text-slate-400" type="button">工单#01 网络维护申请</button>
+                <button data-disabled="该工单不可查看" class="w-full rounded-lg border border-slate-100 px-3 py-2 text-left text-slate-400" type="button">工单#02 权限调整请求</button>
+                <button data-disabled="该工单不可查看" class="w-full rounded-lg border border-slate-100 px-3 py-2 text-left text-slate-400" type="button">工单#03 设备报修</button>
+                <button data-disabled="该工单不可查看" class="w-full rounded-lg border border-slate-100 px-3 py-2 text-left text-slate-400" type="button">工单#04 系统升级申请</button>
+                <button data-disabled="该工单不可查看" class="w-full rounded-lg border border-slate-100 px-3 py-2 text-left text-slate-400" type="button">工单#05 报表导出异常</button>
+                <button data-disabled="该工单不可查看" class="w-full rounded-lg border border-slate-100 px-3 py-2 text-left text-slate-400" type="button">工单#06 账号冻结申诉</button>
+                <button data-disabled="该工单不可查看" class="w-full rounded-lg border border-slate-100 px-3 py-2 text-left text-slate-400" type="button">工单#07 财务接口联调</button>
+                <button data-disabled="该工单不可查看" class="w-full rounded-lg border border-slate-100 px-3 py-2 text-left text-slate-400" type="button">工单#08 数据回填申请</button>
+                <button data-disabled="该工单不可查看" class="w-full rounded-lg border border-slate-100 px-3 py-2 text-left text-slate-400" type="button">工单#09 外发审批流程</button>
+                <button data-disabled="该工单不可查看" class="w-full rounded-lg border border-slate-100 px-3 py-2 text-left text-slate-400" type="button">工单#10 访问日志下载</button>
+              </div>
+            </article>
+
+            <article class="rounded-2xl border border-rose-200 bg-rose-50 p-4 shadow-sm">
+              <h3 class="text-sm font-semibold text-rose-700">可见异常记录（1）</h3>
+              <a href="./008-ticket-destruction-appeal.html" class="mt-3 block rounded-lg border border-rose-200 bg-white px-3 py-3 hover:bg-rose-100/50">
+                <p class="text-sm font-semibold text-slate-800">《文件销毁异议申请》</p>
+                <p class="mt-1 text-xs text-rose-600">状态：已驳回</p>
+                <p class="mt-1 text-xs text-slate-500">点击查看驳回详情</p>
+              </a>
+            </article>
+          </div>
+
+          <div class="space-y-4">
+            <article class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+              <div class="mb-3 flex items-center justify-between">
+                <h3 class="text-sm font-semibold text-slate-800">新闻动态</h3>
+              </div>
+              <div class="space-y-3">
+                <a href="./002-news-industrial-visit.html" class="block rounded-xl border border-teal-100 bg-teal-50/40 p-3 hover:bg-teal-50">
+                  <p class="text-xs text-slate-400">公司要闻</p>
+                  <p class="mt-1 text-sm font-semibold text-slate-800">无限生物科技有限公司高层调研湖山县工业园，深耕生物新材料产业</p>
+                  <p class="mt-1 text-xs text-teal-600">阅读全文 ></p>
+                </a>
+                <a href="./003-notice-lifeguard-training.html" class="block rounded-xl border border-slate-100 p-3 hover:bg-slate-50">
+                  <p class="text-xs text-slate-400">员工活动</p>
+                  <p class="mt-1 text-sm font-semibold text-slate-800">关于开展第一届员工水上救生知识培训的通知</p>
+                  <p class="mt-1 text-xs text-teal-600">阅读全文 ></p>
+                </a>
+              </div>
+            </article>
+            <article class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+              <h3 class="mb-3 text-sm font-semibold text-slate-800">系统限制说明</h3>
+              <ul class="space-y-2 text-sm text-slate-600">
+                <li>HIS患者业务系统：已被禁用</li>
+                <li>种植牙ERP系统：已被禁用</li>
+                <li>绝大部分OA功能已禁用，仅保留关键词搜索</li>
+              </ul>
+            </article>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div id="accountMenu" class="fixed right-8 top-16 z-30 hidden w-44 rounded-xl border border-slate-200 bg-white p-2 shadow-lg">
+      <button id="logoutButton" class="w-full rounded-lg px-3 py-2 text-left text-sm text-slate-700 hover:bg-slate-50" type="button">
+        退出
+      </button>
+      <button id="loginButton" class="hidden w-full rounded-lg px-3 py-2 text-left text-sm text-slate-700 hover:bg-slate-50" type="button">
+        登录
+      </button>
+    </div>
+
+    <div id="loginModal" class="fixed inset-0 z-40 hidden items-center justify-center bg-slate-900/40 px-4">
+      <div class="w-full max-w-md rounded-2xl bg-white p-5 shadow-xl">
+        <div class="mb-4 flex items-center justify-between">
+          <h3 class="text-base font-semibold text-slate-800">用户登录</h3>
+          <button id="loginCloseButton" class="text-sm text-slate-400 hover:text-slate-600" type="button">关闭</button>
+        </div>
+        <label class="text-xs text-slate-500">账号</label>
+        <input id="loginAccountInput" class="mt-2 h-10 w-full rounded-lg border border-slate-200 px-3 text-sm outline-none" placeholder="请输入账号" />
+        <label class="mt-3 block text-xs text-slate-500">密码</label>
+        <input id="loginPasswordInput" type="password" class="mt-2 h-10 w-full rounded-lg border border-slate-200 px-3 text-sm outline-none" placeholder="请输入密码" />
+        <p id="loginFeedback" class="mt-3 text-xs text-rose-600"></p>
+        <button id="loginSubmitButton" class="mt-2 rounded-lg bg-blue-600 px-4 py-2 text-sm text-white" type="button">登录</button>
+      </div>
+    </div>
+
+    <script src="./progressTracker.js"></script>
+    <script src="./assets/oaWorkbenchNav.js"></script>
+    <script src="./gameData.js"></script>
+    <script src="./gameEngine.js"></script>
+    <script src="./page007Engine.js"></script>
+  </body>
+</html>
+

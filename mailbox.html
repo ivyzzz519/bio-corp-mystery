@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>公司邮箱</title>
+    <link rel="stylesheet" href="./assets/tailwind.css" />
+</head>
+  <body class="min-h-screen bg-slate-100 text-slate-700">
+    <main class="mx-auto max-w-6xl px-4 py-8">
+      <div class="mb-4">
+        <div>
+          <a id="backToWorkbenchLink" href="./001-oa-home.html" class="text-xs text-blue-600 hover:underline">< 返回工作台</a>
+          <h1 class="mt-2 text-2xl font-bold text-slate-800">公司邮箱</h1>
+        </div>
+      </div>
+
+      <section class="grid grid-cols-1 gap-4 lg:grid-cols-[320px,1fr]">
+        <aside class="rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
+          <h2 class="px-2 text-xs font-semibold tracking-wider text-slate-400">收件箱（<span id="inboxCount">1</span>）</h2>
+          <div id="inboxList" class="mt-2 space-y-2">
+            <button
+              data-mail="biz-2"
+              class="mail-item w-full rounded-xl border border-blue-100 bg-blue-50/70 px-4 py-3 text-left"
+              type="button"
+            >
+              <p class="text-sm font-semibold text-slate-800">业务沟通：B-09批次流程记录补充</p>
+              <p class="mt-1 text-xs text-slate-500">发件人：数据运营部</p>
+            </button>
+            <button
+              id="resetMailItem"
+              data-mail="reset-1"
+              class="mail-item hidden w-full rounded-xl border border-slate-200 px-4 py-3 text-left hover:bg-slate-50"
+              type="button"
+            >
+              <p class="text-sm font-semibold text-slate-800">【密码重置通知】无忧云账户临时密码已生成</p>
+              <p class="mt-1 text-xs text-slate-500">发件人：无忧云笔记 安全团队</p>
+            </button>
+          </div>
+
+          <h2 class="mt-4 px-2 text-xs font-semibold tracking-wider text-slate-400">广告邮件（<span id="adCount">1</span>）</h2>
+          <div id="adList" class="mt-2">
+            <button
+              data-mail="ad-1"
+              class="mail-item w-full rounded-xl border border-slate-200 px-4 py-3 text-left hover:bg-slate-50"
+              type="button"
+            >
+              <p class="text-sm font-semibold text-slate-800">【空间告急】留住珍贵记忆！您的年度VIP特惠待激活</p>
+              <p class="mt-1 text-xs text-slate-500">发件人：云盘服务中心</p>
+            </button>
+          </div>
+        </aside>
+
+        <article class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <h2 id="mailTitle" class="text-xl font-bold text-slate-900">欢迎入职</h2>
+          <p id="mailMeta" class="mt-1 text-xs text-slate-500">收件人：林岚（辅助生殖中心-助理）</p>
+          <div id="mailBody" class="prose-article prose-article--compact mt-5 text-slate-700"></div>
+          <a id="mailActionLink" href="./010-notes-linlan.html" class="mt-4 hidden text-sm font-medium text-blue-600 hover:underline">前往查看详情</a>
+        </article>
+      </section>
+    </main>
+    <script src="./progressTracker.js"></script>
+    <script src="./mailboxEngine.js"></script>
+  </body>
+</html>
+
